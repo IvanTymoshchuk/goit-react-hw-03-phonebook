@@ -24,12 +24,12 @@ class App extends Component {
   state = {
     contacts: initialContacts,
     filter: '',
+    isAdded: false,
   };
 
-  addContact = ({ name, number }) => {
+  addContact = ({ name, number, isAdded }) => {
     const normalizedName = name.toLowerCase();
 
-    let isAdded = false;
     this.state.contacts.forEach(el => {
       if (el.name.toLowerCase() === normalizedName) {
         toast.error(`${name}: is already in contacts`, notifyOptions);
@@ -40,11 +40,13 @@ class App extends Component {
     if (isAdded) {
       return;
     }
+
     const contact = {
       id: shortid.generate(),
       name: name,
       number: number,
     };
+
     this.setState(prevState => ({
       contacts: [...prevState.contacts, contact],
     }));
@@ -68,6 +70,23 @@ class App extends Component {
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
   };
+
+  componentDidMount (){
+   const contacts = localStorage.getItem('contacts');
+   const parsedContacts = JSON.parse(contacts);
+   if (parsedContacts) {
+     this.setState({ contacts: parsedContacts });
+   }
+  }
+
+
+  componentDidUpdate (prevProps, prevState) {
+    const { contacts } = this.state;
+    if(contacts!== prevState.contacts) {
+
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+  }
+  }
 
   render() {
     const { filter } = this.state;
