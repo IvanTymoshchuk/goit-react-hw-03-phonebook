@@ -46,8 +46,9 @@ class App extends Component {
 
   addContact = ({ name, number, isAdded }) => {
     const normalizedName = name.toLowerCase();
+    const {  contacts } = this.state;
 
-    this.state.contacts.forEach(el => {
+    contacts.forEach(el => {
       if (el.name.toLowerCase() === normalizedName) {
         toast.error(`${name}: is already in contacts`, notifyOptions);
         isAdded = true;
